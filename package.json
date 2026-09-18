@@ -10,7 +10,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "cleanup:orphans": "node scripts/cleanup-orphans.mjs"
+    "cleanup:orphans": "node scripts/cleanup-orphans.mjs",
+    "repro:stray-group": "node scripts/create-stray-group.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.2",
