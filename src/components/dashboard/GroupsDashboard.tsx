@@ -50,8 +50,17 @@ export function GroupsDashboard() {
 
   if (state.loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-900" />
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Groups</h1>
+            <p className="text-zinc-500 dark:text-zinc-400 mt-1">Manage your expense groups</p>
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-3 py-20" role="status" aria-live="polite">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900 dark:border-zinc-700 dark:border-t-zinc-100" />
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading your groups...</p>
+        </div>
       </div>
     )
   }

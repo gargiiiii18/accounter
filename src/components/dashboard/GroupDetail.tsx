@@ -130,8 +130,9 @@ export function GroupDetail({ groupId }: { groupId: string }) {
 
   if (state.loading || !currentGroup) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-900" />
+      <div className="flex flex-col items-center justify-center gap-3 py-20" role="status" aria-live="polite">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900 dark:border-zinc-700 dark:border-t-zinc-100" />
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading group...</p>
       </div>
     )
   }
