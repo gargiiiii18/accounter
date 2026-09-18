@@ -204,11 +204,14 @@ export async function removeGroupMember(
 
 export async function deleteGroup(userId: string, id: string): Promise<boolean> {
   const { groups, expenses, settlements } = await collections()
-  const result = await groups.deleteOne({ userId, id } as Filter<GroupDoc>)
-  if (result.deletedCount === 0) return false
+  // Remove the group's history FIRST (expenses + settlements) so a failure can
+  // be retried safely and can never leave orphaned records behind for a group
+  // that no longer exists. Also cleans up leftovers if the group row was
+  // already removed by an earlier partial delete.
   await expenses.deleteMany({ userId, groupId: id } as Filter<ExpenseDoc>)
   await settlements.deleteMany({ userId, groupId: id } as Filter<SettlementDoc>)
-  return true
+  const result = await groups.deleteOne({ userId, id } as Filter<GroupDoc>)
+  return result.deletedCount > 0
 }
 
 async function touchGroup(userId: string, groupId: string): Promise<void> {

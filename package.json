@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "cleanup:orphans": "node scripts/cleanup-orphans.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.2",

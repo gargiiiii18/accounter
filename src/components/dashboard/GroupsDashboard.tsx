@@ -43,8 +43,11 @@ export function GroupsDashboard() {
   }
 
   const handleDeleteGroup = async (id: string) => {
-    if (confirm('Delete this group? This will remove all expenses and settlements.')) {
+    if (!confirm('Delete this group? This permanently removes the group and all of its expenses and settlements from the database.')) return
+    try {
       await deleteGroup(id)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to delete group')
     }
   }
 
