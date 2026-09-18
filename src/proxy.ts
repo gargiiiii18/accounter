@@ -1,15 +1,16 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+﻿import { clerkMiddleware } from "@clerk/nextjs/server";
 
 export default clerkMiddleware({
   // Proxy Clerk Frontend API requests through this app (/__clerk/*).
-  // Required for dev instances that block direct browser -> FAPI calls.
-  // debug: true  // <- re-enable temporarily to trace proxy/auth issues
-  frontendApiProxy: { enabled: true },
+  // Enabled only in development: dev instances block direct browser -> FAPI
+  // calls from localhost. On deployed environments (Vercel) the browser talks
+  // to the Clerk FAPI directly, same as a standalone-FE deployment.
+  frontendApiProxy: { enabled: process.env.NODE_ENV === "development" },
 });
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!_next|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     "/(api|trpc)(.*)",
     "/__clerk/:path*",
   ],
