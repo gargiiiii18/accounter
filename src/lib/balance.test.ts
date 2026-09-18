@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateSplits, calculateBalances, simplifyDebts } from '@/lib/balance'
+import { calculateSplits, calculateBalances, simplifyDebts, isPersonalExpense } from '@/lib/balance'
 import type { Expense, Member, Settlement } from '@/lib/types'
 
 const mockMembers: Member[] = [
@@ -178,5 +178,42 @@ describe('simplifyDebts', () => {
       toName: 'Alice',
       amount: 100,
     })
+  })
+})
+describe('isPersonalExpense', () => {
+  it('detects a self-expense (paid by the only split member)', () => {
+    expect(isPersonalExpense({ paidBy: '1', splits: [{ memberId: '1', amount: 50 }] })).toBe(true)
+  })
+
+  it('is false for shared expenses', () => {
+    expect(isPersonalExpense({ paidBy: '1', splits: [{ memberId: '1', amount: 25 }, { memberId: '2', amount: 25 }] })).toBe(false)
+  })
+})
+
+describe('archived records', () => {
+  it('excludes archived expenses from balances', () => {
+    const balances = calculateBalances([{ ...mockExpenses[0], archivedAt: new Date().toISOString() }, mockExpenses[1]], mockMembers, [])
+    const alice = balances.find(b => b.memberId === '1')
+    const bob = balances.find(b => b.memberId === '2')
+    const charlie = balances.find(b => b.memberId === '3')
+    // Only e2 (Uber) counts: Alice paid 0, owed 10; Bob paid 30, owed 10; Charlie paid 0, owed 10
+    expect(alice?.paid).toBe(0)
+    expect(alice?.owed).toBe(10)
+    expect(alice?.net).toBe(-10)
+    expect(bob?.paid).toBe(30)
+    expect(bob?.owed).toBe(10)
+    expect(bob?.net).toBe(20)
+    expect(charlie?.paid).toBe(0)
+    expect(charlie?.owed).toBe(10)
+    expect(charlie?.net).toBe(-10)
+  })
+
+  it('excludes archived settlements from balances', () => {
+    const balances = calculateBalances(mockExpenses, mockMembers, [{ ...mockSettlements[0], archivedAt: new Date().toISOString() }])
+    const alice = balances.find(b => b.memberId === '1')
+    const charlie = balances.find(b => b.memberId === '3')
+    // Same as no settlements: Alice net +50, Charlie net -40
+    expect(alice?.net).toBe(50)
+    expect(charlie?.net).toBe(-40)
   })
 })

@@ -1,7 +1,7 @@
 import 'server-only'
 import { type Collection, type Filter } from 'mongodb'
 import { getCollections } from './mongodb'
-import { calculateBalances } from './balance'
+import { calculateBalances, isPersonalExpense } from './balance'
 import { generateId, getRandomColor } from './utils'
 import type { Group, Member, MemberInput, Expense, Settlement } from './types'
 
@@ -315,9 +315,27 @@ export async function resetGroupBalances(userId: string, groupId: string): Promi
     .every(balance => Math.abs(balance.net) <= 0.01)
   if (!settledUp) return 'not-settled'
 
+    // History is immutable: records are archived (kept in the database as
+  // proof) instead of deleted, and simply stop counting toward balances.
+  // Personal records (a member's own payments) are never auto-cleared.
+  const now = new Date().toISOString()
+  const mutualExpenseIds = expenses
+    .filter(e => !e.archivedAt && !isPersonalExpense(e))
+    .map(e => e.id)
+  const activeSettlementIds = settlements.filter(s => !s.archivedAt).map(s => s.id)
+
   const { expenses: expenseCol, settlements: settlementCol } = await collections()
-  await expenseCol.deleteMany({ userId, groupId } as Filter<ExpenseDoc>)
-  await settlementCol.deleteMany({ userId, groupId } as Filter<SettlementDoc>)
+  if (mutualExpenseIds.length > 0) {
+    await expenseCol.updateMany(
+      { userId, groupId, id: { $in: mutualExpenseIds } } as Filter<ExpenseDoc>,
+      { $set: { archivedAt: now } }
+    )
+  }
+  if (activeSettlementIds.length > 0) {
+    await settlementCol.updateMany(
+      { userId, groupId, id: { $in: activeSettlementIds } } as Filter<SettlementDoc>,
+      { $set: { archivedAt: now } }
+    )
+  }
   await touchGroup(userId, groupId)
-  return 'ok'
-}
+  return 'ok'}

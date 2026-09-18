@@ -33,11 +33,24 @@ export function calculateSplits(
   }
 }
 
+/**
+ * A personal expense is paid by and split only to the payer itself (e.g. a
+ * lone member's own record). These are never auto-cleared - the member
+ * decides explicitly whether to record them as done.
+ */
+export function isPersonalExpense(expense: Pick<Expense, 'paidBy' | 'splits'>): boolean {
+  return expense.splits.length === 1 && expense.splits[0].memberId === expense.paidBy
+}
+
 export function calculateBalances(
-  expenses: Expense[],
+  allExpenses: Expense[],
   members: Member[],
-  settlements: Settlement[]
+  allSettlements: Settlement[]
 ): Balance[] {
+  // Archived records stay in the database (and history) as proof but no
+  // longer count toward balances.
+  const expenses = allExpenses.filter(e => !e.archivedAt)
+  const settlements = allSettlements.filter(s => !s.archivedAt)
   const memberMap = new Map(members.map(m => [m.id, m]))
   const balances = new Map<string, { paid: number; owed: number }>()
 

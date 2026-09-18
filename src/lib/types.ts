@@ -48,6 +48,8 @@ export interface Expense {
   splits: Split[]
   date: string
   createdAt: string
+  /** Set once the record is cleared from balances; kept forever as proof */
+  archivedAt?: string
 }
 
 export interface Settlement {
@@ -59,6 +61,8 @@ export interface Settlement {
   note?: string
   date: string
   createdAt: string
+  /** Set once the record is cleared from balances; kept forever as proof */
+  archivedAt?: string
 }
 
 export interface Balance {

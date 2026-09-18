@@ -25,6 +25,8 @@ export const expenseSchema = z.object({
   splitType: z.enum(['equal', 'exact', 'percentage']),
   splits: z.array(splitSchema).min(1, 'At least one split required'),
   date: z.string().min(1, 'Date is required'),
+  // Set when a record is cleared from balances; kept in the database as proof
+  archivedAt: z.string().optional(),
 }).refine(
   data => {
     if (data.splitType === 'equal') return true
@@ -51,6 +53,8 @@ export const settlementSchema = z.object({
   amount: z.number({ message: 'Amount is required' }).min(0.01, 'Amount must be greater than 0'),
   note: z.string().max(200, 'Note too long').optional(),
   date: z.string().min(1, 'Date is required'),
+  // Set when a record is cleared from balances; kept in the database as proof
+  archivedAt: z.string().optional(),
 }).refine(data => data.fromMemberId !== data.toMemberId, {
   message: 'Cannot settle with yourself',
   path: ['toMemberId'],

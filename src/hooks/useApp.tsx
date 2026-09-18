@@ -3,7 +3,7 @@
 import { createContext, useContext, useReducer, useRef, useEffect, ReactNode, useCallback } from 'react'
 import type { Group, GroupInput, Member, MemberInput, Expense, Settlement, Balance, SimplifiedDebt, GroupSummary } from '@/lib/types'
 import { api } from '@/lib/api'
-import { calculateBalances, simplifyDebts } from '@/lib/balance'
+import { calculateBalances, simplifyDebts, isPersonalExpense } from '@/lib/balance'
 
 interface AppState {
   groups: Group[]
@@ -31,6 +31,7 @@ type Action =
   | { type: 'SET_SETTLEMENTS'; payload: Settlement[] }
   | { type: 'ADD_SETTLEMENT'; payload: Settlement }
   | { type: 'DELETE_SETTLEMENT'; payload: string }
+  | { type: 'ARCHIVE_GROUP_RECORDS'; payload: string }
   | { type: 'CLEAR_GROUP_DATA'; payload: string }
   | { type: 'RECALCULATE_BALANCES' }
 
@@ -72,6 +73,25 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, settlements: [action.payload, ...state.settlements] }
     case 'DELETE_SETTLEMENT':
       return { ...state, settlements: state.settlements.filter(s => s.id !== action.payload) }
+    case 'ARCHIVE_GROUP_RECORDS': {
+      // History is immutable: records are archived (kept as proof) instead of
+      // deleted, and stop counting toward balances. Personal records (a
+      // member's own payments) are kept until explicitly cleared.
+      const now = new Date().toISOString()
+      return {
+        ...state,
+        expenses: state.expenses.map(e =>
+          e.groupId === action.payload && !e.archivedAt && !isPersonalExpense(e)
+            ? { ...e, archivedAt: now }
+            : e
+        ),
+        settlements: state.settlements.map(s =>
+          s.groupId === action.payload && !s.archivedAt
+            ? { ...s, archivedAt: now }
+            : s
+        ),
+      }
+    }
     case 'CLEAR_GROUP_DATA':
       return {
         ...state,
@@ -149,8 +169,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       .every(balance => Math.abs(balance.net) <= 0.01)
     if (!isSettledUp) return
 
+    // Only clear when there are active mutual records to archive; personal
+    // records (a member's own payments) are kept until explicitly cleared.
+    const hasActiveMutualRecords =
+      groupExpenses.some(e => !e.archivedAt && !isPersonalExpense(e)) ||
+      groupSettlements.some(s => !s.archivedAt)
+    if (!hasActiveMutualRecords) return
+
     // Give the user a moment to see the settled-up state and the rounding
-    // leftover notice before the history is cleared.
+    // leftover notice before balances are cleared (records are archived as proof, never deleted).
     await new Promise(resolve => setTimeout(resolve, AUTO_RESET_DELAY_MS))
 
     // Re-verify against the latest state: the user may have added or changed
@@ -159,13 +186,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const latestExpenses = latest.expenses.filter(e => e.groupId === groupId)
     const latestSettlements = latest.settlements.filter(s => s.groupId === groupId)
     if (latestExpenses.length === 0 && latestSettlements.length === 0) return
+    const stillHasMutualRecords =
+      latestExpenses.some(e => !e.archivedAt && !isPersonalExpense(e)) ||
+      latestSettlements.some(s => !s.archivedAt)
+    if (!stillHasMutualRecords) return
     const stillSettled = calculateBalances(latestExpenses, group.members, latestSettlements)
       .every(balance => Math.abs(balance.net) <= 0.01)
     if (!stillSettled) return
 
     try {
       await api.resetGroupBalances(groupId)
-      dispatch({ type: 'CLEAR_GROUP_DATA', payload: groupId })
+      dispatch({ type: 'ARCHIVE_GROUP_RECORDS', payload: groupId })
       dispatch({ type: 'RECALCULATE_BALANCES' })
     } catch {
       // Best-effort: keep the data as-is if the server refuses the reset
@@ -306,7 +337,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // removes every expense and settlement so Paid/Owed/Net reset to zero.
   const resetGroupBalances = async (groupId: string) => {
     await api.resetGroupBalances(groupId)
-    dispatch({ type: 'CLEAR_GROUP_DATA', payload: groupId })
+    dispatch({ type: 'ARCHIVE_GROUP_RECORDS', payload: groupId })
     dispatch({ type: 'RECALCULATE_BALANCES' })
   }
 

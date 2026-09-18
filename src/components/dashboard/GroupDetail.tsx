@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
@@ -8,8 +8,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Plus, DollarSign, Users, Receipt, Handshake, History, ChevronRight, Edit, Trash2, Download, Upload, ArrowUpDown, UserPlus, AlertTriangle, X } from 'lucide-react'
+import { Plus, DollarSign, Users, Receipt, Handshake, History, ChevronRight, Edit, Trash2, Download, Upload, ArrowUpDown, UserPlus, AlertTriangle, X, Check } from 'lucide-react'
 import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils'
+import { isPersonalExpense } from '@/lib/balance'
 import { exportGroupSummaryPdf } from '@/lib/exportPdf'
 import { ExpenseForm } from '@/components/forms/ExpenseForm'
 import { SettlementForm } from '@/components/forms/SettlementForm'
@@ -18,7 +19,7 @@ import type { Group, Expense, Settlement, Member, SimplifiedDebt } from '@/lib/t
 import type { ExpenseFormData, SettlementFormData } from '@/lib/validation'
 
 export function GroupDetail({ groupId }: { groupId: string }) {
-  const { state, loadGroupData, updateGroup, removeGroupMember, createExpense, deleteExpense, createSettlement, deleteSettlement, getGroupSummary } = useApp()
+  const { state, loadGroupData, updateGroup, removeGroupMember, createExpense, deleteExpense, createSettlement, deleteSettlement, updateExpense, getGroupSummary } = useApp()
   const [newExpenseOpen, setNewExpenseOpen] = useState(false)
   const [newSettlementOpen, setNewSettlementOpen] = useState(false)
   const [selectedDebt, setSelectedDebt] = useState<SimplifiedDebt | null>(null)
@@ -298,7 +299,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
           ) : (
             <div className="space-y-2">
               {groupExpenses.map(expense => (
-                <Card key={expense.id}>
+                <Card key={expense.id} className={expense.archivedAt ? 'opacity-60' : ''}>
                   <CardContent className="p-5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
@@ -306,12 +307,12 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                           <DollarSign className="h-5 w-5 text-zinc-500" />
                         </div>
                         <div>
-                          <p className="font-medium">{expense.description}</p>
+                          <div className="flex items-center gap-2"><p className="font-medium">{expense.description}</p>{expense.archivedAt && (<span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300">Cleared</span>)}</div>
                           <p className="text-sm text-zinc-500">{formatDate(expense.date)} · Paid by {currentGroup.members.find(m => m.id === expense.paidBy)?.name}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="font-bold text-lg">{formatCurrency(expense.amount)}</span>
+                        <span className="font-bold text-lg">{formatCurrency(expense.amount)}</span>{settledUp && isPersonalExpense(expense) && !expense.archivedAt && (<Button variant="outline" size="sm" className="h-8" onClick={() => updateExpense(expense.id, { archivedAt: new Date().toISOString() })} title="Record this payment as done - it stops counting toward balances but stays in history as proof"><Check className="h-4 w-4 mr-1" />Mark as done</Button>)}
                         <Button variant="ghost" size="icon" onClick={() => handleEditExpense(expense)}>
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -366,6 +367,15 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                   </tbody>
                 </table>
               </div>
+              {settledUp && (() => {
+                const activePersonal = groupExpenses.filter(e => !e.archivedAt && isPersonalExpense(e))
+                if (activePersonal.length === 0) return null
+                return (
+                  <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
+                    {activePersonal.length} personal payment{activePersonal.length === 1 ? "" : "s"} still on record - mark it as done from the Expenses tab, or keep it as proof.
+                  </p>
+                )
+              })()}
             </CardContent>
           </Card>
 
@@ -501,7 +511,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                             {tx.type === 'expense' ? <DollarSign className="h-4 w-4 text-zinc-500" /> : <Handshake className="h-4 w-4 text-green-600" />}
                           </div>
                           <div>
-                            <p className="font-medium">{tx.type === 'expense' ? tx.description : `${currentGroup.members.find(m => m.id === tx.fromMemberId)?.name} → ${currentGroup.members.find(m => m.id === tx.toMemberId)?.name}`}</p>
+                            <p className="font-medium">{tx.type === 'expense' ? tx.description : `${currentGroup.members.find(m => m.id === tx.fromMemberId)?.name} → ${currentGroup.members.find(m => m.id === tx.toMemberId)?.name}`}{tx.archivedAt && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300">Cleared</span>}</p>
                             <p className="text-sm text-zinc-500">{formatDateTime(tx.date)}</p>
                           </div>
                         </div>
