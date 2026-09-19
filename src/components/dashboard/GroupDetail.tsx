@@ -132,20 +132,20 @@ export function GroupDetail({ groupId }: { groupId: string }) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-20" role="status" aria-live="polite">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900 dark:border-zinc-700 dark:border-t-zinc-100" />
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading group...</p>
+        <p className="text-sm text-slate-400">Loading group...</p>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col h-full gap-8">
+    <div className="flex flex-col h-full gap-5 sm:gap-8">
       <div className="flex-shrink-0">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{currentGroup.name}</h1>
-            <p className="text-zinc-500 dark:text-zinc-400">{currentGroup.members.length} members · {formatCurrency(summary?.totalExpenses || 0)} total expenses</p>
+            <p className="text-slate-400">{currentGroup.members.length} members · {formatCurrency(summary?.totalExpenses || 0)} total expenses</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <Button variant="outline" size="sm" onClick={() => setNewExpenseOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add Expense
@@ -164,7 +164,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
 
       <div className="flex-1 min-h-0 overflow-y-auto">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'overview' | 'expenses' | 'balances' | 'settlements' | 'history')} className="w-full">
-          <TabsList className="sticky top-0 z-20 grid w-full grid-cols-5">
+          <TabsList className="sticky top-0 z-20 flex w-full overflow-x-auto">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="expenses">Expenses</TabsTrigger>
           <TabsTrigger value="balances">Balances</TabsTrigger>
@@ -176,7 +176,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-500">Total Expenses</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-400">Total Expenses</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl sm:text-3xl font-bold tabular-nums">{formatCurrency(summary?.totalExpenses || 0)}</div>
@@ -184,18 +184,18 @@ export function GroupDetail({ groupId }: { groupId: string }) {
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-500">Total Settled</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-400">Total Settled</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl sm:text-3xl font-bold text-green-600 tabular-nums">{formatCurrency(summary?.totalSettled || 0)}</div>
+                <div className="text-2xl sm:text-3xl font-bold text-emerald-400 tabular-nums">{formatCurrency(summary?.totalSettled || 0)}</div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-500">Unsettled</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-400">Unsettled</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl sm:text-3xl font-bold text-red-600 tabular-nums">{formatCurrency(summary?.unsettledAmount || 0)}</div>
+                <div className="text-2xl sm:text-3xl font-bold text-red-400 tabular-nums">{formatCurrency(summary?.unsettledAmount || 0)}</div>
               </CardContent>
             </Card>
           </div>
@@ -206,30 +206,30 @@ export function GroupDetail({ groupId }: { groupId: string }) {
             </CardHeader>
             <CardContent>
               {debts.length === 0 ? (
-                <p className="text-center text-zinc-500 py-8">All settled up! 🎉</p>
+                <p className="text-center text-slate-400 py-8">All settled up! 🎉</p>
               ) : (
                 <div className="space-y-3">
                   {debts.map((debt, index) => (
-                    <div key={index} className="flex items-center justify-between p-5 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                    <div key={index} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 border border-white/10 bg-white/[0.04] rounded-xl">
                       <div className="flex items-center space-x-3">
                         <div className="h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium text-white" style={{ backgroundColor: currentGroup.members.find(m => m.id === debt.from)?.color }}>
                           {debt.fromName[0].toUpperCase()}
                         </div>
                         <div>
                           <p className="font-medium">{debt.fromName}</p>
-                          <p className="text-sm text-zinc-500">owes</p>
+                          <p className="text-sm text-slate-400">owes</p>
                         </div>
-                        <ArrowUpDown className="h-5 w-5 text-zinc-400 mx-2" />
+                        <ArrowUpDown className="h-5 w-5 text-slate-400 mx-2" />
                         <div className="text-right">
                           <p className="font-medium">{debt.toName}</p>
-                          <p className="text-sm text-zinc-500">is owed</p>
+                          <p className="text-sm text-slate-400">is owed</p>
                         </div>
                         <div className="h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium text-white" style={{ backgroundColor: currentGroup.members.find(m => m.id === debt.to)?.color }}>
                           {debt.toName[0].toUpperCase()}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xl font-bold text-red-600">${debt.amount.toFixed(2)}</p>
+                      <div className="flex items-center justify-between gap-2 sm:block sm:text-right">
+                        <p className="text-xl font-bold text-red-400">${debt.amount.toFixed(2)}</p>
                         <Button variant="ghost" size="sm" onClick={() => { setSelectedDebt(debt); setNewSettlementOpen(true) }}>
                           Settle
                         </Button>
@@ -256,14 +256,14 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                 {currentGroup.members.map(member => {
                   const canRemove = canRemoveMember(member.id)
                   return (
-                    <div key={member.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+                    <div key={member.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/[0.06] transition-colors">
                       <div className="flex items-center space-x-3">
                         <div className="h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium text-white" style={{ backgroundColor: member.color }}>
                           {member.name[0].toUpperCase()}
                         </div>
                         <div>
                           <p className="font-medium text-sm">{member.name}</p>
-                          {member.email && <p className="text-xs text-zinc-500">{member.email}</p>}
+                          {member.email && <p className="text-xs text-slate-400">{member.email}</p>}
                         </div>
                       </div>
                       <Button
@@ -271,7 +271,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                         size="icon"
                         onClick={() => handleRemoveMember(member.id)}
                         disabled={!canRemove}
-                        className={canRemove ? 'text-red-500 hover:text-red-600' : 'text-zinc-300 dark:text-zinc-600 cursor-not-allowed'}
+                        className={canRemove ? 'text-red-500 hover:text-red-400' : 'text-white/20 cursor-not-allowed'}
                         title={canRemove ? 'Remove member' : 'Cannot remove: member has unsettled balance'}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -288,9 +288,9 @@ export function GroupDetail({ groupId }: { groupId: string }) {
           {groupExpenses.length === 0 ? (
             <Card className="text-center py-12">
               <CardContent>
-                <Receipt className="h-12 w-12 mx-auto text-zinc-300 dark:text-zinc-700 mb-6" />
+                <Receipt className="h-12 w-12 mx-auto text-white/25 mb-6" />
                 <h3 className="text-lg font-medium mb-3">No expenses yet</h3>
-                <p className="text-zinc-500 dark:text-zinc-400 mb-6">Add your first expense</p>
+                <p className="text-slate-400 mb-6">Add your first expense</p>
                 <Button onClick={() => setNewExpenseOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add Expense
@@ -302,14 +302,14 @@ export function GroupDetail({ groupId }: { groupId: string }) {
               {groupExpenses.map(expense => (
                 <Card key={expense.id} className={expense.archivedAt ? 'opacity-60' : ''}>
                   <CardContent className="p-5">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center space-x-4">
-                        <div className="h-10 w-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-                          <DollarSign className="h-5 w-5 text-zinc-500" />
+                        <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
+                          <DollarSign className="h-5 w-5 text-slate-400" />
                         </div>
                         <div>
-                          <div className="flex items-center gap-2"><p className="font-medium">{expense.description}</p>{expense.archivedAt && (<span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300">Cleared</span>)}</div>
-                          <p className="text-sm text-zinc-500">{formatDate(expense.date)} · Paid by {currentGroup.members.find(m => m.id === expense.paidBy)?.name}</p>
+                          <div className="flex items-center gap-2"><p className="font-medium">{expense.description}</p>{expense.archivedAt && (<span className="text-[10px] px-1.5 py-0.5 rounded bg-white/15 text-slate-300">Cleared</span>)}</div>
+                          <p className="text-sm text-slate-400">{formatDate(expense.date)} · Paid by {currentGroup.members.find(m => m.id === expense.paidBy)?.name}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -317,7 +317,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                         <Button variant="ghost" size="icon" onClick={() => handleEditExpense(expense)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => deleteExpense(expense.id)} className="text-red-500 hover:text-red-600">
+                        <Button variant="ghost" size="icon" onClick={() => deleteExpense(expense.id)} className="text-red-500 hover:text-red-400">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -338,7 +338,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-zinc-200 dark:border-zinc-800">
+                    <tr className="border-b border-white/10">
                       <th className="text-left py-3 px-4 font-medium">Member</th>
                       <th className="text-right py-3 px-4 font-medium">Paid</th>
                       <th className="text-right py-3 px-4 font-medium">Owed</th>
@@ -347,7 +347,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                   </thead>
                   <tbody>
                     {balances.map(balance => (
-                      <tr key={balance.memberId} className="border-b border-zinc-100 dark:border-zinc-800/50">
+                      <tr key={balance.memberId} className="border-b border-white/5">
                         <td className="py-3 px-4">
                           <div className="flex items-center space-x-2">
                             <div className="h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium text-white" style={{ backgroundColor: currentGroup.members.find(m => m.id === balance.memberId)?.color }}>
@@ -358,9 +358,9 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                             </div>
                           </div>
                         </td>
-                        <td className="text-right py-3 px-4 text-green-600">{formatCurrency(balance.paid)}</td>
-                        <td className="text-right py-3 px-4 text-red-600">{formatCurrency(balance.owed)}</td>
-                        <td className="text-right py-3 px-4 font-bold" style={{ color: balance.net >= 0 ? 'var(--green-600)' : 'var(--red-600)' }}>
+                        <td className="text-right py-3 px-4 text-emerald-400">{formatCurrency(balance.paid)}</td>
+                        <td className="text-right py-3 px-4 text-red-400">{formatCurrency(balance.owed)}</td>
+                        <td className={'text-right py-3 px-4 font-bold tabular-nums ' + (balance.net > 0 ? 'text-emerald-400' : balance.net < 0 ? 'text-red-400' : 'text-slate-300')}>
                           {balance.net >= 0 ? '+' : ''}{formatCurrency(balance.net)}
                         </td>
                       </tr>
@@ -372,7 +372,7 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                 const activePersonal = groupExpenses.filter(e => !e.archivedAt && isPersonalExpense(e))
                 if (activePersonal.length === 0) return null
                 return (
-                  <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
+                  <p className="mt-4 text-sm text-slate-400">
                     {activePersonal.length} personal payment{activePersonal.length === 1 ? "" : "s"} still on record - mark it as done from the Expenses tab, or keep it as proof.
                   </p>
                 )
@@ -387,9 +387,9 @@ export function GroupDetail({ groupId }: { groupId: string }) {
             <CardContent>
               {debts.length === 0 ? (
                 <div className="space-y-3">
-                  <p className="text-center text-zinc-500 py-8">All settled up! 🎉</p>
+                  <p className="text-center text-slate-400 py-8">All settled up! 🎉</p>
                   {showRoundingNote && (
-                    <div className="relative flex items-start gap-2 p-3 pr-10 text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <div className="relative flex items-start gap-2 p-3 pr-10 text-sm text-amber-300 bg-amber-400/10 border border-amber-400/30 rounded-lg">
                       <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
                       <span>
                         A leftover of {formatCurrency(roundingLeftover)} exists because the expenses could not be divided exactly evenly. It is considered settled.
@@ -408,26 +408,26 @@ export function GroupDetail({ groupId }: { groupId: string }) {
               ) : (
                 <div className="space-y-3">
                   {debts.map((debt, index) => (
-                    <div key={index} className="flex items-center justify-between p-5 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                    <div key={index} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 sm:p-5 border border-white/10 bg-white/[0.04] rounded-xl">
                       <div className="flex items-center space-x-3">
                         <div className="h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium text-white" style={{ backgroundColor: currentGroup.members.find(m => m.id === debt.from)?.color }}>
                           {debt.fromName[0].toUpperCase()}
                         </div>
                         <div>
                           <p className="font-medium">{debt.fromName}</p>
-                          <p className="text-sm text-zinc-500">pays</p>
+                          <p className="text-sm text-slate-400">pays</p>
                         </div>
-                        <ArrowUpDown className="h-5 w-5 text-zinc-400 mx-2" />
+                        <ArrowUpDown className="h-5 w-5 text-slate-400 mx-2" />
                         <div className="text-right">
                           <p className="font-medium">{debt.toName}</p>
-                          <p className="text-sm text-zinc-500">receives</p>
+                          <p className="text-sm text-slate-400">receives</p>
                         </div>
                         <div className="h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium text-white" style={{ backgroundColor: currentGroup.members.find(m => m.id === debt.to)?.color }}>
                           {debt.toName[0].toUpperCase()}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xl font-bold text-red-600">${debt.amount.toFixed(2)}</p>
+                      <div className="flex items-center justify-between gap-2 sm:block sm:text-right">
+                        <p className="text-xl font-bold text-red-400">${debt.amount.toFixed(2)}</p>
                         <Button variant="ghost" size="sm" onClick={() => { setSelectedDebt(debt); setNewSettlementOpen(true) }}>
                           Record
                         </Button>
@@ -450,9 +450,9 @@ export function GroupDetail({ groupId }: { groupId: string }) {
           {groupSettlements.length === 0 ? (
             <Card className="text-center py-12">
               <CardContent>
-                <Handshake className="h-12 w-12 mx-auto text-zinc-300 dark:text-zinc-700 mb-6" />
+                <Handshake className="h-12 w-12 mx-auto text-white/25 mb-6" />
                 <h3 className="text-lg font-medium mb-3">No settlements yet</h3>
-                <p className="text-zinc-500 dark:text-zinc-400 mb-6">Record when someone pays back</p>
+                <p className="text-slate-400 mb-6">Record when someone pays back</p>
               </CardContent>
             </Card>
           ) : (
@@ -460,22 +460,22 @@ export function GroupDetail({ groupId }: { groupId: string }) {
               {groupSettlements.map(settlement => (
                 <Card key={settlement.id}>
                   <CardContent className="p-5">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center space-x-4">
                         <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                          <Handshake className="h-5 w-5 text-green-600" />
+                          <Handshake className="h-5 w-5 text-emerald-400" />
                         </div>
                         <div>
                           <p className="font-medium">
                             {currentGroup.members.find(m => m.id === settlement.fromMemberId)?.name} → {currentGroup.members.find(m => m.id === settlement.toMemberId)?.name}
                           </p>
-                          <p className="text-sm text-zinc-500">{formatDateTime(settlement.date)}</p>
+                          <p className="text-sm text-slate-400">{formatDateTime(settlement.date)}</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="font-bold text-lg text-green-600">{formatCurrency(settlement.amount)}</span>
-                        {settlement.note && <span className="text-sm text-zinc-500">{settlement.note}</span>}
-                        <Button variant="ghost" size="icon" onClick={() => deleteSettlement(settlement.id)} className="text-red-500 hover:text-red-600">
+                        <span className="font-bold text-lg text-emerald-400">{formatCurrency(settlement.amount)}</span>
+                        {settlement.note && <span className="text-sm text-slate-400">{settlement.note}</span>}
+                        <Button variant="ghost" size="icon" onClick={() => deleteSettlement(settlement.id)} className="text-red-500 hover:text-red-400">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -500,23 +500,23 @@ export function GroupDetail({ groupId }: { groupId: string }) {
                 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
                 if (allTransactions.length === 0) {
-                  return <p className="text-center text-zinc-500 py-8">No transactions yet</p>
+                  return <p className="text-center text-slate-400 py-8">No transactions yet</p>
                 }
 
                 return (
                   <div className="space-y-2">
                     {allTransactions.map((tx, index) => (
-                      <div key={`${tx.type}-${tx.id}`} className="flex items-center justify-between p-3 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0">
+                      <div key={`${tx.type}-${tx.id}`} className="flex flex-wrap items-center justify-between gap-2 p-3 border-b border-white/5 last:border-0">
                         <div className="flex items-center space-x-3">
-                          <div className={`h-8 w-8 rounded-full flex items-center justify-center ${tx.type === 'expense' ? 'bg-zinc-100 dark:bg-zinc-800' : 'bg-green-100 dark:bg-green-900/30'}`}>
-                            {tx.type === 'expense' ? <DollarSign className="h-4 w-4 text-zinc-500" /> : <Handshake className="h-4 w-4 text-green-600" />}
+                          <div className={`h-8 w-8 rounded-full flex items-center justify-center ${tx.type === 'expense' ? 'bg-white/10' : 'bg-green-100 dark:bg-green-900/30'}`}>
+                            {tx.type === 'expense' ? <DollarSign className="h-4 w-4 text-slate-400" /> : <Handshake className="h-4 w-4 text-emerald-400" />}
                           </div>
                           <div>
-                            <p className="font-medium">{tx.type === 'expense' ? tx.description : `${currentGroup.members.find(m => m.id === tx.fromMemberId)?.name} → ${currentGroup.members.find(m => m.id === tx.toMemberId)?.name}`}{tx.archivedAt && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300">Cleared</span>}</p>
-                            <p className="text-sm text-zinc-500">{formatDateTime(tx.date)}</p>
+                            <p className="font-medium">{tx.type === 'expense' ? tx.description : `${currentGroup.members.find(m => m.id === tx.fromMemberId)?.name} → ${currentGroup.members.find(m => m.id === tx.toMemberId)?.name}`}{tx.archivedAt && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-white/15 text-slate-300">Cleared</span>}</p>
+                            <p className="text-sm text-slate-400">{formatDateTime(tx.date)}</p>
                           </div>
                         </div>
-                        <span className={`font-medium ${tx.type === 'expense' ? 'text-red-600' : 'text-green-600'}`}>
+                        <span className={`font-medium ${tx.type === 'expense' ? 'text-red-400' : 'text-emerald-400'}`}>
                           {tx.type === 'expense' ? '-' : '+'}{formatCurrency(tx.amount)}
                         </span>
                       </div>

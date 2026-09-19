@@ -71,7 +71,7 @@ export function GroupForm({ initialData, onSubmit, onCancel, isEditing }: GroupF
         </div>
 
         {fields.map((field, index) => (
-          <div key={field.id} className="flex items-center space-x-2 p-4 border border-zinc-200 rounded-xl dark:border-zinc-800">
+          <div key={field.id} className="flex items-center space-x-2 p-4 border border-white/10 bg-white/[0.03] rounded-xl">
             <Input
               placeholder="Name"
               {...form.register(`members.${index}.name`)}
@@ -85,7 +85,7 @@ export function GroupForm({ initialData, onSubmit, onCancel, isEditing }: GroupF
               type="email"
             />
             {fields.length > 1 && (
-              <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="text-red-500 hover:text-red-600">
+              <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="text-red-500 hover:text-red-400">
                 <X className="h-4 w-4" />
               </Button>
             )}

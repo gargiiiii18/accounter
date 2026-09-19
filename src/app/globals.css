@@ -1,31 +1,93 @@
 @import "tailwindcss";
 
+/*
+ * Theme: deep marine blue with frosted glass panels.
+ * Solid colors only - no gradients. Subtle motion via fade-up on cards.
+ */
 @theme inline {
-  --color-background: #fafafa;
-  --color-foreground: #18181b;
-  --color-muted: #f4f4f5;
-  --color-muted-foreground: #71717a;
-  --color-border: #e4e4e7;
-  --color-ring: #18181b;
-  --color-primary: #18181b;
-  --color-primary-foreground: #fafafa;
-  --color-secondary: #f4f4f5;
-  --color-secondary-foreground: #18181b;
+  --color-background: #0d1f36;
+  --color-foreground: #f1f5f9;
+  --color-muted: rgba(255, 255, 255, 0.06);
+  --color-muted-foreground: #93a7bf;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-ring: #8ab6e8;
+  --color-primary: #ffffff;
+  --color-primary-foreground: #0d1f36;
+  --color-secondary: rgba(255, 255, 255, 0.08);
+  --color-secondary-foreground: #f1f5f9;
   --color-destructive: #ef4444;
-  --color-destructive-foreground: #fafafa;
-  --color-accent: #f4f4f5;
-  --color-accent-foreground: #18181b;
-  --color-popover: #fafafa;
-  --color-popover-foreground: #18181b;
-  --color-card: #ffffff;
-  --color-card-foreground: #18181b;
+  --color-destructive-foreground: #ffffff;
+  --color-accent: rgba(255, 255, 255, 0.08);
+  --color-accent-foreground: #f1f5f9;
+  --color-popover: #13294a;
+  --color-popover-foreground: #f1f5f9;
+  --color-card: rgba(255, 255, 255, 0.05);
+  --color-card-foreground: #f1f5f9;
 }
 
 @layer base {
   * {
-    @apply border-zinc-200 dark:border-zinc-800;
+    @apply border-white/10;
   }
   body {
-    @apply bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50;
+    background-color: #0d1f36;
+    color: #f1f5f9;
   }
+  /* Hide native number-input spin buttons: hovering the field could
+     accidentally increment/decrement amounts. */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
+
+/* Glassmorphism surfaces (solid translucent colors, no gradients) */
+@layer components {
+  .glass-card {
+    @apply rounded-2xl border border-white/10 bg-white/[0.05] shadow-lg shadow-black/20 backdrop-blur-xl;
+  }
+  .glass-subtle {
+    @apply rounded-xl border border-white/10 bg-white/[0.04];
+  }
+}
+
+/* Subtle entrance animation */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fade-up 0.3s ease-out both;
+}
+
+/* Thin, unobtrusive scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::selection {
+  background: rgba(138, 182, 232, 0.35);
 }

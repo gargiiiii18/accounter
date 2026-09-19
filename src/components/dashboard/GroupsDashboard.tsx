@@ -54,15 +54,15 @@ export function GroupsDashboard() {
   if (state.loading) {
     return (
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Groups</h1>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-1">Manage your expense groups</p>
+            <p className="text-slate-400 mt-1">Manage your expense groups</p>
           </div>
         </div>
         <div className="flex flex-col items-center justify-center gap-3 py-20" role="status" aria-live="polite">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900 dark:border-zinc-700 dark:border-t-zinc-100" />
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading your groups...</p>
+          <p className="text-sm text-slate-400">Loading your groups...</p>
         </div>
       </div>
     )
@@ -70,10 +70,10 @@ export function GroupsDashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Groups</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 mt-1">Manage your expense groups</p>
+          <p className="text-slate-400 mt-1">Manage your expense groups</p>
         </div>
         <Button onClick={() => setNewGroupOpen(true)} size="lg">
           <Plus className="h-4 w-4 mr-2" />
@@ -84,9 +84,9 @@ export function GroupsDashboard() {
       {state.groups.length === 0 ? (
         <Card className="text-center py-16">
           <CardContent className="pt-6">
-            <Users className="h-14 w-14 mx-auto text-zinc-300 dark:text-zinc-700 mb-5" />
+            <Users className="h-14 w-14 mx-auto text-white/25 mb-5" />
             <h3 className="text-xl font-medium mb-3">No groups yet</h3>
-            <p className="text-zinc-500 dark:text-zinc-400 mb-6 max-w-sm mx-auto">Create your first group to start tracking expenses</p>
+            <p className="text-slate-400 mb-6 max-w-sm mx-auto">Create your first group to start tracking expenses</p>
             <Button onClick={() => setNewGroupOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Create Group
@@ -102,13 +102,13 @@ export function GroupsDashboard() {
                   <div className="min-w-0">
                     <CardTitle className="text-xl break-words">{summary.group.name}</CardTitle>
                     {summary.group.description && (
-                      <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1.5 break-words">{summary.group.description}</p>
+                      <p className="text-sm text-slate-400 mt-1.5 break-words">{summary.group.description}</p>
                     )}
                   </div>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 shrink-0 text-red-500 hover:text-red-600"
+                    className="h-8 w-8 shrink-0 text-red-500 hover:text-red-400"
                     onClick={() => handleDeleteGroup(summary.group.id)}
                     title="Delete group"
                   >
@@ -118,20 +118,20 @@ export function GroupsDashboard() {
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex flex-wrap gap-3 mb-5">
-                  <div className="flex-1 min-w-28 text-center p-3 sm:p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
-                    <DollarSign className="h-5 w-5 mx-auto text-zinc-500 mb-2" />
+                  <div className="flex-1 min-w-28 text-center p-3 sm:p-4 border border-white/10 bg-white/[0.04] rounded-lg">
+                    <DollarSign className="h-5 w-5 mx-auto text-slate-400 mb-2" />
                     <p className="text-lg sm:text-2xl font-bold tabular-nums">{formatCurrency(summary.totalExpenses)}</p>
-                    <p className="text-xs text-zinc-500 mt-1">Total Expenses</p>
+                    <p className="text-xs text-slate-400 mt-1">Total Expenses</p>
                   </div>
-                  <div className="flex-1 min-w-28 text-center p-3 sm:p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
-                    <Users className="h-5 w-5 mx-auto text-zinc-500 mb-2" />
+                  <div className="flex-1 min-w-28 text-center p-3 sm:p-4 border border-white/10 bg-white/[0.04] rounded-lg">
+                    <Users className="h-5 w-5 mx-auto text-slate-400 mb-2" />
                     <p className="text-lg sm:text-2xl font-bold tabular-nums">{summary.memberCount}</p>
-                    <p className="text-xs text-zinc-500 mt-1">Members</p>
+                    <p className="text-xs text-slate-400 mt-1">Members</p>
                   </div>
-                  <div className="flex-1 min-w-28 text-center p-3 sm:p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
-                    <TrendingUp className="h-5 w-5 mx-auto text-zinc-500 mb-2" />
+                  <div className="flex-1 min-w-28 text-center p-3 sm:p-4 border border-white/10 bg-white/[0.04] rounded-lg">
+                    <TrendingUp className="h-5 w-5 mx-auto text-slate-400 mb-2" />
                     <p className="text-lg sm:text-2xl font-bold text-red-500 tabular-nums">{formatCurrency(summary.unsettledAmount)}</p>
-                    <p className="text-xs text-zinc-500 mt-1">Unsettled</p>
+                    <p className="text-xs text-slate-400 mt-1">Unsettled</p>
                   </div>
                 </div>
                 <Link href={`/groups/${summary.group.id}`} className="block w-full text-center">
