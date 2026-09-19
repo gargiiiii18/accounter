@@ -168,7 +168,10 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
               value={split?.amount || ''}
               onChange={(e) => {
                 const val = parseFloat(e.target.value) || 0
-                const newSplits = splits.map(s => s.memberId === member.id ? { ...s, amount: val } : s)
+                const exists = splits.some(s => s.memberId === member.id)
+                const newSplits = exists
+                  ? splits.map(s => s.memberId === member.id ? { ...s, amount: val } : s)
+                  : [...splits, { memberId: member.id, amount: val }]
                 form.setValue('splits', newSplits)
               }}
               className="w-28 text-right"
@@ -202,7 +205,11 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
               value={split?.percentage || ''}
               onChange={(e) => {
                 const val = parseFloat(e.target.value) || 0
-                const newSplits = splits.map(s => s.memberId === member.id ? { ...s, percentage: val } : s)
+                const splitAmount = Math.round((totalAmount * val) / 100 * 100) / 100
+                const exists = splits.some(s => s.memberId === member.id)
+                const newSplits = exists
+                  ? splits.map(s => s.memberId === member.id ? { ...s, percentage: val, amount: splitAmount } : s)
+                  : [...splits, { memberId: member.id, percentage: val, amount: splitAmount }]
                 form.setValue('splits', newSplits)
               }}
               className="w-24 text-right"
@@ -280,7 +287,7 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">Who's in this?</Label>
+          <Label className="text-sm font-medium">Who&apos;s in this?</Label>
           <div className="flex items-center gap-2">
             <Button type="button" variant="ghost" size="sm" onClick={selectAll} className="h-7 text-xs">
               All

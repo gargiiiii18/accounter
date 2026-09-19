@@ -77,10 +77,29 @@ for (const userId of candidateUserIds.filter(id => !groupIdsByUser.has(id))) {
   settlements += await countOrDelete('settlements', { userId })
 }
 
+// 3. Repair percentage-split expenses stored with zero amounts (older bug):
+//    recompute each split amount from the expense total and percentages.
+const broken = await client.db(dbName).collection('expenses')
+  .find({ splitType: 'percentage' })
+  .toArray()
+let repaired = 0
+for (const expense of broken) {
+  if (!expense.splits || !expense.splits.every(s => !s.amount)) continue
+  const sumPct = expense.splits.reduce((sum, s) => sum + (s.percentage || 0), 0)
+  if (Math.abs(sumPct - 100) > 0.01) continue // only repair well-formed splits
+  const splits = expense.splits.map(s => ({
+    ...s,
+    amount: Math.round((expense.amount * (s.percentage || 0)) / 100 * 100) / 100,
+  }))
+  if (apply) {
+    await client.db(dbName).collection('expenses').updateOne({ _id: expense._id }, { $set: { splits } })
+  }
+  repaired++
+}
 await client.close()
 
 console.log(
   apply
-    ? 'Removed ' + expenses + ' orphaned expense(s) and ' + settlements + ' orphaned settlement(s).'
-    : 'Found ' + expenses + ' orphaned expense(s) and ' + settlements + ' orphaned settlement(s). Re-run with "-- --yes" to remove them.'
+    ? 'Removed ' + expenses + ' orphaned expense(s) and ' + settlements + ' orphaned settlement(s). Repaired ' + repaired + ' percentage-split expense(s).'
+    : 'Found ' + expenses + ' orphaned expense(s) and ' + settlements + ' orphaned settlement(s). ' + repaired + ' percentage-split expense(s) would be repaired. Re-run with "-- --yes" to apply.'
 )

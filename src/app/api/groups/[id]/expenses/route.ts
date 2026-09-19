@@ -32,13 +32,22 @@ export async function POST(request: Request, { params }: Params) {
     if (parsed.data.groupId !== id) {
       return Response.json({ error: 'Group id mismatch' }, { status: 400 })
     }
+    // Percentage splits must carry the computed amount so balances (Paid/Owed)
+    // can be derived from splits; never trust the client to have set it.
+    const normalizedSplits = parsed.data.splitType === 'percentage'
+      ? parsed.data.splits.map(s => ({
+          memberId: s.memberId,
+          amount: Math.round((parsed.data.amount * (s.percentage ?? 0)) / 100 * 100) / 100,
+          percentage: s.percentage,
+        }))
+      : parsed.data.splits.map(s => ({
+          memberId: s.memberId,
+          amount: s.amount ?? 0,
+          percentage: s.percentage,
+        }))
     const expense = await createExpense(userId, {
       ...parsed.data,
-      splits: parsed.data.splits.map(s => ({
-        memberId: s.memberId,
-        amount: s.amount ?? 0,
-        percentage: s.percentage,
-      })),
+      splits: normalizedSplits,
     })
     if (!expense) {
       return Response.json({ error: 'Group not found' }, { status: 404 })
