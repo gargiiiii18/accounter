@@ -71,7 +71,7 @@ export function GroupForm({ initialData, onSubmit, onCancel, isEditing }: GroupF
         </div>
 
         {fields.map((field, index) => (
-          <div key={field.id} className="flex items-center space-x-2 p-4 border border-white/10 bg-white/[0.03] rounded-xl">
+          <div key={field.id} className="flex items-center space-x-2 p-4 border border-white/15 bg-white/[0.03] rounded-xl">
             <Input
               placeholder="Name"
               {...form.register(`members.${index}.name`)}

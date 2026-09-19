@@ -67,7 +67,7 @@ export function SettlementForm({ groupId, members, debts, onSubmit, onCancel, in
                     {debt.fromName[0].toUpperCase()}
                   </div>
                   <span>{debt.fromName}</span>
-                  <ArrowRight className="h-4 w-4 mx-1 text-slate-400" />
+                  <ArrowRight className="h-4 w-4 mx-1 text-slate-300" />
                   <div className="h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium text-white" style={{ backgroundColor: memberMap.get(debt.to)?.color }}>
                     {debt.toName[0].toUpperCase()}
                   </div>

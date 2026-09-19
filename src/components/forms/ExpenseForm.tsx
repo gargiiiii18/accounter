@@ -129,11 +129,11 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
 
   const renderEqualSplit = () => (
     <div className="space-y-3">
-      <p className="text-sm text-slate-400">
+      <p className="text-sm text-slate-300">
         Split equally among {selectedMembersList.length} member{selectedMembersList.length !== 1 ? 's' : ''}
       </p>
       {selectedMembersList.map((member) => (
-        <div key={member.id} className="flex items-center justify-between p-3 border border-white/10 bg-white/[0.04] rounded-lg">
+        <div key={member.id} className="flex items-center justify-between p-3 border border-white/15 bg-white/[0.07] rounded-lg">
           <div className="flex items-center space-x-3">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
@@ -149,13 +149,13 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
   const renderExactSplit = () => (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-slate-400">Total: {splitSum.toFixed(2)} / {totalAmount.toFixed(2)}</span>
+        <span className="text-slate-300">Total: {splitSum.toFixed(2)} / {totalAmount.toFixed(2)}</span>
         {!isValidSum && <span className="text-red-500 font-medium">Amounts must sum to total</span>}
       </div>
       {selectedMembersList.map((member) => {
         const split = splits.find(s => s.memberId === member.id)
         return (
-          <div key={member.id} className="flex items-center space-x-3 p-3 border border-white/10 bg-white/[0.03] rounded-lg">
+          <div key={member.id} className="flex items-center space-x-3 p-3 border border-white/15 bg-white/[0.03] rounded-lg">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white shrink-0" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
             </div>
@@ -185,13 +185,13 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
   const renderPercentageSplit = () => (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-slate-400">Total: {splitSum.toFixed(1)}%</span>
+        <span className="text-slate-300">Total: {splitSum.toFixed(1)}%</span>
         {!isValidSum && <span className="text-red-500 font-medium">Must sum to 100%</span>}
       </div>
       {selectedMembersList.map((member) => {
         const split = splits.find(s => s.memberId === member.id)
         return (
-          <div key={member.id} className="flex items-center space-x-3 p-3 border border-white/10 bg-white/[0.03] rounded-lg">
+          <div key={member.id} className="flex items-center space-x-3 p-3 border border-white/15 bg-white/[0.03] rounded-lg">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white shrink-0" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
             </div>
@@ -214,7 +214,7 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
               }}
               className="w-24 text-right"
             />
-            <span className="text-slate-400">%</span>
+            <span className="text-slate-300">%</span>
           </div>
         )
       })}
@@ -239,7 +239,7 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
         <div className="space-y-2">
           <Label htmlFor="amount">Amount</Label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 h-4 w-4" />
             <Input
               id="amount"
               type="number"
@@ -308,8 +308,8 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
                 className={cn(
                   'flex items-center space-x-2 p-2 rounded-lg border transition-all text-left',
                   isSelected
-                    ? 'border-zinc-900 dark:border-zinc-100 bg-white/[0.04]'
-                    : 'border-white/10 opacity-40 hover:opacity-70'
+                    ? 'border-zinc-900 dark:border-zinc-100 bg-white/[0.07]'
+                    : 'border-white/15 opacity-40 hover:opacity-70'
                 )}
               >
                 <div className={cn(

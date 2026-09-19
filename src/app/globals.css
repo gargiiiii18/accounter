@@ -1,37 +1,37 @@
 @import "tailwindcss";
 
 /*
- * Theme: deep marine blue with frosted glass panels.
- * Solid colors only - no gradients. Subtle motion via fade-up on cards.
+ * Theme: light steel-blue background with frosted glass panels.
+ * Solid colors only - no gradients.
  */
 @theme inline {
-  --color-background: #0d1f36;
-  --color-foreground: #f1f5f9;
-  --color-muted: rgba(255, 255, 255, 0.06);
-  --color-muted-foreground: #93a7bf;
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-ring: #8ab6e8;
+  --color-background: #3f6490;
+  --color-foreground: #ffffff;
+  --color-muted: rgba(255, 255, 255, 0.1);
+  --color-muted-foreground: #d7e3f0;
+  --color-border: rgba(255, 255, 255, 0.16);
+  --color-ring: #ffffff;
   --color-primary: #ffffff;
-  --color-primary-foreground: #0d1f36;
-  --color-secondary: rgba(255, 255, 255, 0.08);
-  --color-secondary-foreground: #f1f5f9;
+  --color-primary-foreground: #2f527c;
+  --color-secondary: rgba(255, 255, 255, 0.12);
+  --color-secondary-foreground: #ffffff;
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
-  --color-accent: rgba(255, 255, 255, 0.08);
-  --color-accent-foreground: #f1f5f9;
-  --color-popover: #13294a;
-  --color-popover-foreground: #f1f5f9;
-  --color-card: rgba(255, 255, 255, 0.05);
-  --color-card-foreground: #f1f5f9;
+  --color-accent: rgba(255, 255, 255, 0.12);
+  --color-accent-foreground: #ffffff;
+  --color-popover: #4a7099;
+  --color-popover-foreground: #ffffff;
+  --color-card: rgba(255, 255, 255, 0.08);
+  --color-card-foreground: #ffffff;
 }
 
 @layer base {
   * {
-    @apply border-white/10;
+    @apply border-white/15;
   }
   body {
-    background-color: #0d1f36;
-    color: #f1f5f9;
+    background-color: #3f6490;
+    color: #ffffff;
   }
   /* Hide native number-input spin buttons: hovering the field could
      accidentally increment/decrement amounts. */
@@ -49,10 +49,10 @@
 /* Glassmorphism surfaces (solid translucent colors, no gradients) */
 @layer components {
   .glass-card {
-    @apply rounded-2xl border border-white/10 bg-white/[0.05] shadow-lg shadow-black/20 backdrop-blur-xl;
+    @apply rounded-2xl border border-white/15 bg-white/[0.08] shadow-lg shadow-black/10 backdrop-blur-xl;
   }
   .glass-subtle {
-    @apply rounded-xl border border-white/10 bg-white/[0.04];
+    @apply rounded-xl border border-white/15 bg-white/[0.07];
   }
 }
 
@@ -74,14 +74,14 @@
 /* Thin, unobtrusive scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 8px;
 }
 ::-webkit-scrollbar-track {
@@ -89,5 +89,5 @@
 }
 
 ::selection {
-  background: rgba(138, 182, 232, 0.35);
+  background: rgba(255, 255, 255, 0.28);
 }

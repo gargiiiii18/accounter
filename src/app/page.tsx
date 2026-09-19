@@ -8,7 +8,7 @@ export default async function HomePage() {
     return (
       <main className="container mx-auto px-4 sm:px-6 py-20 text-center">
         <h1 className="text-4xl font-bold tracking-tight mb-4">Expense Tracker</h1>
-        <p className="text-slate-400 max-w-lg mx-auto mb-10 text-lg">
+        <p className="text-slate-300 max-w-lg mx-auto mb-10 text-lg">
           Track shared expenses with friends and groups. Sign in to view your groups or create a new account to get started.
         </p>
         <div className="flex justify-center">

@@ -21,10 +21,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} antialiased bg-[#0d1f36] text-slate-100`}>
+      <body className={`${inter.className} antialiased bg-[#3f6490] text-white`}>
         <ClerkProvider>
           <AppProvider>
-            <header className="border-b border-white/10 bg-[#0d1f36]/80 backdrop-blur-xl sticky top-0 z-40">
+            <header className="border-b border-white/15 bg-[#3f6490]/80 backdrop-blur-xl sticky top-0 z-40">
               <div className="container mx-auto px-6 h-16 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-4 font-semibold tracking-tight text-lg">
                   <Wallet className="h-6 w-6" />
