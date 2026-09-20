@@ -24,7 +24,7 @@ export default async function GroupPage({ params }: PageProps) {
 
   const { id } = await params
   return (
-        <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 h-[calc(100vh-4rem)] overflow-y-auto">
+    <main className="min-h-[calc(100vh-4rem)]">
       <GroupDetail groupId={id} />
     </main>
   )

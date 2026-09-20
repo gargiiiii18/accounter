@@ -32,6 +32,7 @@ type Action =
   | { type: 'ADD_SETTLEMENT'; payload: Settlement }
   | { type: 'DELETE_SETTLEMENT'; payload: string }
   | { type: 'ARCHIVE_GROUP_RECORDS'; payload: string }
+  | { type: 'UNARCHIVE_GROUP_RECORDS'; payload: string }
   | { type: 'CLEAR_GROUP_DATA'; payload: string }
   | { type: 'RECALCULATE_BALANCES' }
 
@@ -88,6 +89,21 @@ function reducer(state: AppState, action: Action): AppState {
         settlements: state.settlements.map(s =>
           s.groupId === action.payload && !s.archivedAt
             ? { ...s, archivedAt: now }
+            : s
+        ),
+      }
+    }
+    case 'UNARCHIVE_GROUP_RECORDS': {
+      return {
+        ...state,
+        expenses: state.expenses.map(e =>
+          e.groupId === action.payload && e.archivedAt
+            ? { ...e, archivedAt: undefined }
+            : e
+        ),
+        settlements: state.settlements.map(s =>
+          s.groupId === action.payload && s.archivedAt
+            ? { ...s, archivedAt: undefined }
             : s
         ),
       }
@@ -327,10 +343,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const deleteSettlement = async (id: string) => {
     await api.deleteSettlement(id)
-    dispatch({ type: 'DELETE_SETTLEMENT', payload: id })
-    dispatch({ type: 'RECALCULATE_BALANCES' })
     const deleted = state.settlements.find(s => s.id === id)
-    if (deleted) void autoResetIfSettled(deleted.groupId, state.expenses, state.settlements.filter(s => s.id !== id))
+    dispatch({ type: 'DELETE_SETTLEMENT', payload: id })
+    if (deleted) dispatch({ type: 'UNARCHIVE_GROUP_RECORDS', payload: deleted.groupId })
+    dispatch({ type: 'RECALCULATE_BALANCES' })
   }
 
   // Only succeeds once the group is fully settled up (verified server-side):

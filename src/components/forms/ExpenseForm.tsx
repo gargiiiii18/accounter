@@ -6,13 +6,12 @@ import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DialogFooter } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Calculator, Percent, DollarSign, Check } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, toLocalDatetime } from '@/lib/utils'
 import { expenseSchema, type ExpenseFormData } from '@/lib/validation'
 import type { Member } from '@/lib/types'
 import { calculateSplits } from '@/lib/balance'
@@ -46,12 +45,11 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
     defaultValues: {
       groupId,
       description: initialData?.description || '',
-      // Leave empty so the placeholder shows instead of a prefilled 0
       amount: initialData?.amount ?? undefined,
       paidBy,
       splitType,
       splits: initialData?.splits || [],
-      date: initialData?.date || new Date().toISOString().split('T')[0],
+      date: initialData?.date || toLocalDatetime(new Date()),
     },
   })
 
@@ -76,25 +74,23 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
     if (selectedMembersList.length === 0) return
 
     form.setValue('splitType', splitType)
-    const currentSplits = form.getValues('splits')
     const selectedIds = selectedMembersList.map(m => m.id)
 
-    const customSplits = splitType !== 'equal'
-      ? currentSplits.filter(s => selectedMembers.has(s.memberId)).map(s => ({
-          memberId: s.memberId,
-          amount: s.amount,
-          percentage: s.percentage,
-        }))
-      : undefined
-
-    const newSplits = calculateSplits(
-      amount || 0,
-      selectedIds,
-      splitType,
-      customSplits
-    ).map(s => ({ memberId: s.memberId, amount: s.amount, percentage: s.percentage }))
-
-    form.setValue('splits', newSplits)
+    if (splitType === 'equal') {
+      const newSplits = calculateSplits(
+        amount || 0,
+        selectedIds,
+        'equal',
+      ).map(s => ({ memberId: s.memberId, amount: s.amount, percentage: s.percentage }))
+      form.setValue('splits', newSplits)
+    } else {
+      const cleared = selectedIds.map(id => ({
+        memberId: id,
+        amount: 0,
+        percentage: 0,
+      }))
+      form.setValue('splits', cleared)
+    }
   }, [splitType, selectedMembersList, form, amount])
 
   useEffect(() => {
@@ -129,11 +125,11 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
 
   const renderEqualSplit = () => (
     <div className="space-y-3">
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-[#5a7089]">
         Split equally among {selectedMembersList.length} member{selectedMembersList.length !== 1 ? 's' : ''}
       </p>
       {selectedMembersList.map((member) => (
-        <div key={member.id} className="flex items-center justify-between p-3 bg-zinc-50 rounded-lg">
+        <div key={member.id} className="flex items-center justify-between p-3 bg-[#eef3f9] rounded-lg">
           <div className="flex items-center space-x-3">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
@@ -149,13 +145,13 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
   const renderExactSplit = () => (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-zinc-500">Total: {splitSum.toFixed(2)} / {totalAmount.toFixed(2)}</span>
+        <span className="text-[#5a7089]">Total: {splitSum.toFixed(2)} / {totalAmount.toFixed(2)}</span>
         {!isValidSum && <span className="text-red-500 font-medium">Amounts must sum to total</span>}
       </div>
       {selectedMembersList.map((member) => {
         const split = splits.find(s => s.memberId === member.id)
         return (
-          <div key={member.id} className="flex items-center space-x-3 p-3 border border-zinc-200 rounded-lg">
+          <div key={member.id} className="flex items-center space-x-3 p-3 border border-[#c0cdd9] rounded-lg">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white shrink-0" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
             </div>
@@ -185,13 +181,13 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
   const renderPercentageSplit = () => (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-zinc-500">Total: {splitSum.toFixed(1)}%</span>
+        <span className="text-[#5a7089]">Total: {splitSum.toFixed(1)}%</span>
         {!isValidSum && <span className="text-red-500 font-medium">Must sum to 100%</span>}
       </div>
       {selectedMembersList.map((member) => {
         const split = splits.find(s => s.memberId === member.id)
         return (
-          <div key={member.id} className="flex items-center space-x-3 p-3 border border-zinc-200 rounded-lg">
+          <div key={member.id} className="flex items-center space-x-3 p-3 border border-[#c0cdd9] rounded-lg">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white shrink-0" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
             </div>
@@ -214,7 +210,7 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
               }}
               className="w-24 text-right"
             />
-            <span className="text-zinc-500">%</span>
+            <span className="text-[#5a7089]">%</span>
           </div>
         )
       })}
@@ -239,7 +235,7 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
         <div className="space-y-2">
           <Label htmlFor="amount">Amount</Label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 h-4 w-4" />
+            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5a7089] h-4 w-4" />
             <Input
               id="amount"
               type="number"
@@ -277,7 +273,7 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
         <Label htmlFor="date">Date</Label>
         <Input
           id="date"
-          type="date"
+          type="datetime-local"
           {...form.register('date')}
           className="w-full max-w-xs"
         />
@@ -308,15 +304,15 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
                 className={cn(
                   'flex items-center space-x-2 p-2 rounded-lg border transition-all text-left',
                   isSelected
-                    ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-100'
-                    : 'border-zinc-200 opacity-40 hover:opacity-70'
+                    ? 'border-[#1a2332] bg-[#eef3f9]'
+                    : 'border-[#c0cdd9] opacity-40 hover:opacity-70'
                 )}
               >
                 <div className={cn(
                   'h-4 w-4 rounded flex items-center justify-center shrink-0 border',
-                  isSelected ? 'bg-zinc-900 dark:bg-zinc-100 border-zinc-900 dark:border-zinc-100' : 'border-zinc-300 dark:border-zinc-600'
+                  isSelected ? 'bg-[#1a2332] border-[#1a2332]' : 'border-[#a3b5c7]'
                 )}>
-                  {isSelected && <Check className="h-2.5 w-2.5 text-white dark:text-zinc-900" />}
+                  {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
                 </div>
                 <div className="h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-medium text-white shrink-0" style={{ backgroundColor: member.color }}>
                   {member.name[0].toUpperCase()}

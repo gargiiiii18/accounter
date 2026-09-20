@@ -21,13 +21,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased bg-[#e9f1f9] text-zinc-900`}>
+      <body className={`${inter.className} antialiased bg-[#d0e2f4] text-zinc-900`}>
         <ClerkProvider>
           <AppProvider>
-            <header className="border-b border-zinc-200 bg-white/70 backdrop-blur sticky top-0 z-40">
+            <header className="bg-[#3b82f6] sticky top-0 z-40 shadow-md">
               <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-4 font-semibold tracking-tight text-lg text-zinc-900">
-                  <Wallet className="h-6 w-6" />
+                <Link href="/" className="flex items-center gap-3 font-bold tracking-tight text-lg text-white">
+                  <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <Wallet className="h-5 w-5 text-white" />
+                  </div>
                   <span>Expense Tracker</span>
                 </Link>
                 <AuthControls />

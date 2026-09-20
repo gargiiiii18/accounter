@@ -19,7 +19,7 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="container mx-auto px-4 sm:px-6 py-10">
+    <main className="min-h-[calc(100vh-4rem)]">
       <GroupsDashboard />
     </main>
   )

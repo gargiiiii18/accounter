@@ -4,52 +4,52 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Theme: lighter blue background with solid white cards.
- * Clean Figma-Make style: soft blue page, white panels, blue primary buttons.
+ * Theme: medium-light blue background with solid white cards.
+ * Splitwise-inspired layout: soft blue page, white panels, blue primary buttons.
  * Solid colors only — no gradients, no glassmorphism.
  */
 
 @theme inline {
-  --color-background: #e9f1f9;
-  --color-foreground: #122036;
-  --color-muted: #eef3f9;
-  --color-muted-foreground: #68829f;
-  --color-border: #d7e2ef;
+  --color-background: #d0e2f4;
+  --color-foreground: #1a2332;
+  --color-muted: #dce5ed;
+  --color-muted-foreground: #5a7089;
+  --color-border: #c0cdd9;
   --color-ring: #2563eb;
-  --color-primary: #2563eb;
+  --color-primary: #3b82f6;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #e6eef7;
-  --color-secondary-foreground: #1b2b43;
+  --color-secondary: #dce5ed;
+  --color-secondary-foreground: #1a2332;
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
-  --color-accent: #e6eef7;
-  --color-accent-foreground: #1b2b43;
+  --color-accent: #dce5ed;
+  --color-accent-foreground: #1a2332;
   --color-popover: #ffffff;
-  --color-popover-foreground: #122036;
+  --color-popover-foreground: #1a2332;
   --color-card: #ffffff;
-  --color-card-foreground: #122036;
+  --color-card-foreground: #1a2332;
 
   /* Blue-tinted zinc scale: every zinc-* class in the components maps to the
      soft blue palette automatically, keeping the original zinc-based markup. */
-  --color-zinc-50: #f4f8fc;
-  --color-zinc-100: #e6eef7;
-  --color-zinc-200: #d7e2ef;
-  --color-zinc-300: #b9cbe0;
-  --color-zinc-400: #8ba3bf;
-  --color-zinc-500: #68829f;
-  --color-zinc-600: #4f6785;
-  --color-zinc-700: #3b5170;
-  --color-zinc-800: #293c57;
-  --color-zinc-900: #1b2b43;
-  --color-zinc-950: #122036;
+  --color-zinc-50: #eef3f9;
+  --color-zinc-100: #dce5ed;
+  --color-zinc-200: #c0cdd9;
+  --color-zinc-300: #a3b5c7;
+  --color-zinc-400: #7d96ad;
+  --color-zinc-500: #5a7089;
+  --color-zinc-600: #456073;
+  --color-zinc-700: #354d60;
+  --color-zinc-800: #273a4d;
+  --color-zinc-900: #1a2332;
+  --color-zinc-950: #111827;
 }
 
 @layer base {
   * {
-    @apply border-zinc-200 dark:border-zinc-800;
+    @apply border-zinc-200;
   }
   body {
-    @apply bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50;
+    @apply bg-[#d0e2f4] text-zinc-900;
   }
 
   /* Hide native number-input spin buttons: hovering the field could

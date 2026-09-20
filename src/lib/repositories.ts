@@ -298,6 +298,21 @@ export async function deleteSettlement(userId: string, id: string): Promise<Sett
   return settlement
 }
 
+export async function unarchiveGroupRecords(userId: string, groupId: string): Promise<void> {
+  const { expenses: expenseCol, settlements: settlementCol } = await collections()
+  await Promise.all([
+    expenseCol.updateMany(
+      { userId, groupId, archivedAt: { $exists: true, $ne: null } } as unknown as Filter<ExpenseDoc>,
+      { $unset: { archivedAt: '' } }
+    ),
+    settlementCol.updateMany(
+      { userId, groupId, archivedAt: { $exists: true, $ne: null } } as unknown as Filter<SettlementDoc>,
+      { $unset: { archivedAt: '' } }
+    ),
+  ])
+  await touchGroup(userId, groupId)
+}
+
 export type ResetGroupBalancesResult = 'not-found' | 'not-settled' | 'ok'
 
 /**

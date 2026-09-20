@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { ArrowRight } from 'lucide-react'
 import { settlementSchema, type SettlementFormData } from '@/lib/validation'
+import { toLocalDatetime } from '@/lib/utils'
 import type { Member } from '@/lib/types'
 
 interface SettlementFormProps {
@@ -30,10 +30,9 @@ export function SettlementForm({ groupId, members, debts, onSubmit, onCancel, in
       groupId,
       fromMemberId: initialFrom || '',
       toMemberId: initialTo || '',
-      // Leave empty so the placeholder shows instead of a prefilled 0
       amount: initialAmount ?? undefined,
       note: '',
-      date: new Date().toISOString().split('T')[0],
+      date: toLocalDatetime(new Date()),
     },
   })
 
@@ -67,7 +66,7 @@ export function SettlementForm({ groupId, members, debts, onSubmit, onCancel, in
                     {debt.fromName[0].toUpperCase()}
                   </div>
                   <span>{debt.fromName}</span>
-                  <ArrowRight className="h-4 w-4 mx-1 text-zinc-500" />
+                  <ArrowRight className="h-4 w-4 mx-1 text-[#5a7089]" />
                   <div className="h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium text-white" style={{ backgroundColor: memberMap.get(debt.to)?.color }}>
                     {debt.toName[0].toUpperCase()}
                   </div>
@@ -164,20 +163,20 @@ export function SettlementForm({ groupId, members, debts, onSubmit, onCancel, in
         <Label htmlFor="date">Date</Label>
         <Input
           id="date"
-          type="date"
+          type="datetime-local"
           {...form.register('date')}
           className="w-full max-w-xs"
         />
       </div>
 
-      <DialogFooter className="border-t pt-6">
+      <div className="flex items-center justify-end gap-2 border-t pt-6">
         <Button type="button" variant="outline" onClick={onCancel} className="w-full sm:w-auto">
           Cancel
         </Button>
         <Button type="submit" className="w-full sm:w-auto">
           Record Settlement
         </Button>
-      </DialogFooter>
+      </div>
     </form>
   )
 }

@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { deleteSettlement } from '@/lib/repositories'
+import { deleteSettlement, unarchiveGroupRecords } from '@/lib/repositories'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -14,6 +14,7 @@ export async function DELETE(_request: Request, { params }: Params) {
     if (!settlement) {
       return Response.json({ error: 'Settlement not found' }, { status: 404 })
     }
+    await unarchiveGroupRecords(userId, settlement.groupId)
     return new Response(null, { status: 204 })
   } catch (error) {
     console.error('DELETE /api/settlements/[id] failed:', error)

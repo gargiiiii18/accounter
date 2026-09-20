@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { DialogFooter } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { Plus, UserPlus, X } from 'lucide-react'
+import { UserPlus, X } from 'lucide-react'
 import { groupSchema, type GroupFormData } from '@/lib/validation'
 
 interface GroupFormProps {
@@ -71,7 +71,7 @@ export function GroupForm({ initialData, onSubmit, onCancel, isEditing }: GroupF
         </div>
 
         {fields.map((field, index) => (
-          <div key={field.id} className="flex items-center space-x-2 p-4 border border-zinc-200 rounded-xl">
+          <div key={field.id} className="flex items-center space-x-2 p-4 border border-[#c0cdd9] rounded-xl">
             <Input
               placeholder="Name"
               {...form.register(`members.${index}.name`)}
