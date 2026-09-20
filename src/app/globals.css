@@ -1,42 +1,55 @@
 @import "tailwindcss";
 
+/* Class-based dark variant (currently unused — the app renders light) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
- * Theme: light steel-blue background with frosted glass panels.
- * Solid colors only - no gradients.
+ * Theme: lighter blue background with solid white cards.
+ * Clean Figma-Make style: soft blue page, white panels, blue primary buttons.
+ * Solid colors only — no gradients, no glassmorphism.
  */
 
 @theme inline {
-  --color-background: #3f6490;
-  --color-foreground: #ffffff;
-  --color-muted: rgba(255, 255, 255, 0.1);
-  --color-muted-foreground: #d7e3f0;
-  --color-border: rgba(255, 255, 255, 0.13);
-  --color-ring: #ffffff;
-  --color-primary: #ffffff;
-  --color-primary-foreground: #2f527c;
-  --color-secondary: rgba(255, 255, 255, 0.10);
-  --color-secondary-foreground: #ffffff;
-  --color-destructive: #ef4444;
+  --color-background: #e9f1f9;
+  --color-foreground: #122036;
+  --color-muted: #eef3f9;
+  --color-muted-foreground: #68829f;
+  --color-border: #d7e2ef;
+  --color-ring: #2563eb;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #e6eef7;
+  --color-secondary-foreground: #1b2b43;
+  --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
-  --color-accent: rgba(255, 255, 255, 0.10);
-  --color-accent-foreground: #ffffff;
-  --color-popover: #4a7099;
-  --color-popover-foreground: #ffffff;
-  --color-card: rgba(255, 255, 255, 0.06);
-  --color-card-foreground: #ffffff;
+  --color-accent: #e6eef7;
+  --color-accent-foreground: #1b2b43;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #122036;
+  --color-card: #ffffff;
+  --color-card-foreground: #122036;
+
+  /* Blue-tinted zinc scale: every zinc-* class in the components maps to the
+     soft blue palette automatically, keeping the original zinc-based markup. */
+  --color-zinc-50: #f4f8fc;
+  --color-zinc-100: #e6eef7;
+  --color-zinc-200: #d7e2ef;
+  --color-zinc-300: #b9cbe0;
+  --color-zinc-400: #8ba3bf;
+  --color-zinc-500: #68829f;
+  --color-zinc-600: #4f6785;
+  --color-zinc-700: #3b5170;
+  --color-zinc-800: #293c57;
+  --color-zinc-900: #1b2b43;
+  --color-zinc-950: #122036;
 }
 
 @layer base {
   * {
-    @apply border-white/6;
+    @apply border-zinc-200 dark:border-zinc-800;
   }
-
   body {
-    background-color: #3f6490;
-    color: #ffffff;
-    /* Barely-there dot texture (solid dots, no gradients): gives the frosted
-       panels something to blur so the glass actually reads as glass. */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E");
+    @apply bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-zinc-50;
   }
 
   /* Hide native number-input spin buttons: hovering the field could
@@ -50,79 +63,26 @@
     -moz-appearance: textfield;
     appearance: textfield;
   }
-}
-
-/* Glassmorphism surfaces — visibly frosted, no gradients.
-   .glass-card uses @apply in @layer components; the ::before rule is in
-   @layer base (which preserves raw CSS) so it survives the build. */
-@layer components {
-  .glass-card {
-    position: relative;
-    @apply rounded-2xl
-           border border-white/10 border-t-white/18
-           bg-white/[0.04]
-           shadow-black/5
-           backdrop-blur-xl;
-  }
-
-  .glass-subtle {
-    @apply rounded-xl
-           border border-white/8 border-t-white/14
-           bg-white/[0.03]
-           backdrop-blur-xl;
-  }
-
-  .glass-popover {
-    @apply rounded-xl
-           border border-white/6
-           bg-[#4a7099] bg-white/[0.015]
-           backdrop-blur-xl;
-  }
-
-  /* Subtle entrance animation */
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .fade-up {
-    animation: fade-up 0.3s ease-out both;
-  }
 
   /* Thin, unobtrusive scrollbars */
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    scrollbar-color: rgba(30, 58, 95, 0.25) transparent;
   }
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(30, 58, 95, 0.25);
     border-radius: 8px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
-}
-
-@layer base {
-  .glass-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    pointer-events: none;
-  }
 
   ::selection {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(37, 99, 235, 0.15);
   }
 }
+

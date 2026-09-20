@@ -12,7 +12,7 @@ export default async function GroupPage({ params }: PageProps) {
     return (
       <main className="container mx-auto px-6 py-16 text-center">
         <h1 className="text-2xl font-semibold mb-3">Sign in required</h1>
-        <p className="text-slate-300 max-w-md mx-auto mb-8">
+        <p className="text-zinc-500 max-w-md mx-auto mb-8">
           You need to be signed in to view this group.
         </p>
         <div className="flex justify-center">

@@ -46,8 +46,8 @@ export function SettlementForm({ groupId, members, debts, onSubmit, onCancel, in
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {debts.length > 0 && (
-        <div className="space-y-2 p-4 bg-emerald-400/10 border border-emerald-400/30 rounded-lg">
-          <p className="text-sm font-medium text-emerald-300">Suggested Settlements</p>
+        <div className="space-y-2 p-4 bg-emerald-50 border border-emerald-300 rounded-lg">
+          <p className="text-sm font-medium text-emerald-600">Suggested Settlements</p>
           <div className="space-y-1">
             {debts.map((debt, index) => (
               <Button
@@ -67,7 +67,7 @@ export function SettlementForm({ groupId, members, debts, onSubmit, onCancel, in
                     {debt.fromName[0].toUpperCase()}
                   </div>
                   <span>{debt.fromName}</span>
-                  <ArrowRight className="h-4 w-4 mx-1 text-slate-300" />
+                  <ArrowRight className="h-4 w-4 mx-1 text-zinc-500" />
                   <div className="h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium text-white" style={{ backgroundColor: memberMap.get(debt.to)?.color }}>
                     {debt.toName[0].toUpperCase()}
                   </div>
