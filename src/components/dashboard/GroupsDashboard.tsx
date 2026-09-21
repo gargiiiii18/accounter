@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Plus, Search, Users, ArrowRight, Edit, Trash2 } from 'lucide-react'
+import { Plus, Search, Users, ArrowRight, Edit, Trash2, WifiOff } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import { calculateBalances } from '@/lib/balance'
 import { GroupForm } from '@/components/forms/GroupForm'
@@ -126,6 +126,7 @@ export function GroupsDashboard() {
 
       <DashboardList
         groupsEmpty={state.groups.length === 0}
+        error={state.error}
         search={search}
         clearSearch={() => setSearch('')}
         summaries={visibleSummaries}
@@ -163,6 +164,7 @@ export function GroupsDashboard() {
 
 function DashboardList(props: {
   groupsEmpty: boolean
+  error: string | null
   search: string
   clearSearch: () => void
   summaries: GroupSummary[]
@@ -171,8 +173,22 @@ function DashboardList(props: {
   onEditGroup: (group: Group) => void
   onDeleteGroup: (id: string) => void
 }) {
-  const { groupsEmpty, clearSearch, summaries } = props
+  const { groupsEmpty, error, clearSearch, summaries } = props
   const { figuresByGroup, onNewGroup, onEditGroup, onDeleteGroup } = props
+  if (error && groupsEmpty) {
+    return (
+      <Card className="text-center py-16 rounded-2xl">
+        <CardContent className="pt-6">
+          <WifiOff className="h-14 w-14 mx-auto text-[#a3b5c7] mb-5" />
+          <h3 className="text-xl font-semibold mb-2 text-[#1a2332]">Unable to load groups</h3>
+          <p className="text-[#5a7089] mb-8">Check your internet connection and try again</p>
+          <Button variant="outline" onClick={() => window.location.reload()} size="lg" className="rounded-xl">
+            Retry
+          </Button>
+        </CardContent>
+      </Card>
+    )
+  }
   if (groupsEmpty) {
     return (
       <Card className="text-center py-16 rounded-2xl">

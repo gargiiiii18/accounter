@@ -39,9 +39,9 @@ type Action =
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_LOADING':
-      return { ...state, loading: action.payload }
+      return { ...state, loading: action.payload, error: action.payload ? null : state.error }
     case 'SET_ERROR':
-      return { ...state, error: action.payload }
+      return { ...state, error: action.payload, loading: false }
     case 'SET_GROUPS':
       return { ...state, groups: action.payload, loading: false }
     case 'ADD_GROUP':

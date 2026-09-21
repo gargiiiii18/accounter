@@ -149,6 +149,14 @@ export function GroupDetail({ groupId }: { groupId: string }) {
   const youOwe = yourBalance && yourBalance.net < 0 ? Math.abs(yourBalance.net) : 0
 
   if (state.loading || !currentGroup) {
+    if (state.error && !currentGroup) {
+      return (
+        <div className="flex flex-col items-center justify-center gap-3 py-20">
+          <p className="text-sm text-red-500 font-medium">{state.error}</p>
+          <p className="text-xs text-[#5a7089]">Check your internet connection and try again</p>
+        </div>
+      )
+    }
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-20" role="status" aria-live="polite">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c0cdd9] border-t-[#3b82f6]" />
