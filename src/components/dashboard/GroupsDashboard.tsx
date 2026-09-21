@@ -135,7 +135,7 @@ export function GroupsDashboard() {
         onDeleteGroup={handleDeleteGroup}
       />
       <Dialog open={newGroupOpen} onOpenChange={setNewGroupOpen}>
-        <DialogContent className="max-w-md rounded-2xl">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-2xl">
           <DialogHeader>
             <DialogTitle>Create New Group</DialogTitle>
           </DialogHeader>
@@ -144,7 +144,7 @@ export function GroupsDashboard() {
       </Dialog>
       {editingGroup && (
         <Dialog open={!!editingGroup} onOpenChange={open => !open && setEditingGroup(null)}>
-          <DialogContent className="max-w-md rounded-2xl">
+          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-2xl">
             <DialogHeader>
               <DialogTitle>Edit Group</DialogTitle>
             </DialogHeader>

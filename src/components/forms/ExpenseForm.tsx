@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DialogFooter } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Calculator, Percent, DollarSign, Check } from 'lucide-react'
+import { Calculator, Percent, DollarSign, Check, Pencil } from 'lucide-react'
 import { cn, toLocalDatetime } from '@/lib/utils'
 import { expenseSchema, type ExpenseFormData } from '@/lib/validation'
 import type { Member } from '@/lib/types'
@@ -34,6 +34,7 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
     }
     return new Set(members.map(m => m.id))
   })
+  const [editingFields, setEditingFields] = useState<Set<string>>(new Set())
 
   const selectedMembersList = useMemo(
     () => members.filter(m => selectedMembers.has(m.id)),
@@ -70,11 +71,14 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
 
   const amount = form.watch("amount")
 
+  const prevSplitTypeRef = useRef(splitType)
+
   useEffect(() => {
     if (selectedMembersList.length === 0) return
-
     form.setValue('splitType', splitType)
     const selectedIds = selectedMembersList.map(m => m.id)
+    const changed = prevSplitTypeRef.current !== splitType
+    prevSplitTypeRef.current = splitType
 
     if (splitType === 'equal') {
       const newSplits = calculateSplits(
@@ -83,13 +87,25 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
         'equal',
       ).map(s => ({ memberId: s.memberId, amount: s.amount, percentage: s.percentage }))
       form.setValue('splits', newSplits)
-    } else {
-      const cleared = selectedIds.map(id => ({
-        memberId: id,
-        amount: 0,
-        percentage: 0,
-      }))
-      form.setValue('splits', cleared)
+    } else if (changed) {
+      if (isEditing && initialData?.splits && initialData.splits.length > 0) {
+        const preserved = selectedIds.map(id => {
+          const existing = initialData.splits?.find(s => s.memberId === id)
+          return {
+            memberId: id,
+            amount: existing?.amount || 0,
+            percentage: existing?.percentage || 0,
+          }
+        })
+        form.setValue('splits', preserved)
+      } else {
+        const cleared = selectedIds.map(id => ({
+          memberId: id,
+          amount: 0,
+          percentage: 0,
+        }))
+        form.setValue('splits', cleared)
+      }
     }
   }, [splitType, selectedMembersList, form, amount])
 
@@ -150,28 +166,47 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
       </div>
       {selectedMembersList.map((member) => {
         const split = splits.find(s => s.memberId === member.id)
+        const isFieldEditing = editingFields.has(`exact-${member.id}`)
         return (
           <div key={member.id} className="flex items-center space-x-3 p-3 border border-[#c0cdd9] rounded-lg">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white shrink-0" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
             </div>
             <Label className="flex-1 text-sm mb-0">{member.name}</Label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              value={split?.amount || ''}
-              onChange={(e) => {
-                const val = parseFloat(e.target.value) || 0
-                const exists = splits.some(s => s.memberId === member.id)
-                const newSplits = exists
-                  ? splits.map(s => s.memberId === member.id ? { ...s, amount: val } : s)
-                  : [...splits, { memberId: member.id, amount: val }]
-                form.setValue('splits', newSplits)
-              }}
-              className="w-28 text-right"
-            />
+            {isEditing && !isFieldEditing ? (
+              <>
+                <span className="w-28 text-right font-semibold text-sm">{split?.amount ? Number(split.amount).toFixed(2) : '0.00'}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 shrink-0"
+                  onClick={() => {
+                    setEditingFields(prev => new Set(prev).add(`exact-${member.id}`))
+                  }}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+              </>
+            ) : (
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={split?.amount || ''}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value) || 0
+                  const exists = splits.some(s => s.memberId === member.id)
+                  const newSplits = exists
+                    ? splits.map(s => s.memberId === member.id ? { ...s, amount: val } : s)
+                    : [...splits, { memberId: member.id, amount: val }]
+                  form.setValue('splits', newSplits)
+                }}
+                className="w-28 text-right"
+                autoFocus={isFieldEditing}
+              />
+            )}
           </div>
         )
       })}
@@ -186,31 +221,52 @@ export function ExpenseForm({ groupId, members, initialData, onSubmit, onCancel,
       </div>
       {selectedMembersList.map((member) => {
         const split = splits.find(s => s.memberId === member.id)
+        const isFieldEditing = editingFields.has(`pct-${member.id}`)
         return (
           <div key={member.id} className="flex items-center space-x-3 p-3 border border-[#c0cdd9] rounded-lg">
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium text-white shrink-0" style={{ backgroundColor: member.color }}>
               {member.name[0].toUpperCase()}
             </div>
             <Label className="flex-1 text-sm mb-0">{member.name}</Label>
-            <Input
-              type="number"
-              step="1"
-              min="0"
-              max="100"
-              placeholder="0%"
-              value={split?.percentage || ''}
-              onChange={(e) => {
-                const val = parseFloat(e.target.value) || 0
-                const splitAmount = Math.round((totalAmount * val) / 100 * 100) / 100
-                const exists = splits.some(s => s.memberId === member.id)
-                const newSplits = exists
-                  ? splits.map(s => s.memberId === member.id ? { ...s, percentage: val, amount: splitAmount } : s)
-                  : [...splits, { memberId: member.id, percentage: val, amount: splitAmount }]
-                form.setValue('splits', newSplits)
-              }}
-              className="w-24 text-right"
-            />
-            <span className="text-[#5a7089]">%</span>
+            {isEditing && !isFieldEditing ? (
+              <>
+                <span className="w-24 text-right font-semibold text-sm">{split?.percentage ? Number(split.percentage).toFixed(0) : '0'}%</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 shrink-0"
+                  onClick={() => {
+                    setEditingFields(prev => new Set(prev).add(`pct-${member.id}`))
+                  }}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Input
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="100"
+                  placeholder="0%"
+                  value={split?.percentage || ''}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value) || 0
+                    const splitAmount = Math.round((totalAmount * val) / 100 * 100) / 100
+                    const exists = splits.some(s => s.memberId === member.id)
+                    const newSplits = exists
+                      ? splits.map(s => s.memberId === member.id ? { ...s, percentage: val, amount: splitAmount } : s)
+                      : [...splits, { memberId: member.id, percentage: val, amount: splitAmount }]
+                    form.setValue('splits', newSplits)
+                  }}
+                  className="w-24 text-right"
+                  autoFocus={isFieldEditing}
+                />
+                <span className="text-[#5a7089]">%</span>
+              </>
+            )}
           </div>
         )
       })}
