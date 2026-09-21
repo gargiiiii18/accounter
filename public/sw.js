@@ -1,4 +1,4 @@
-const CACHE_NAME = 'accounter-v1';
+const CACHE_NAME = 'accounter-v2';
 const STATIC_ASSETS = [
   '/',
   '/icon.svg',
@@ -25,6 +25,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
+
+  if (request.url.includes('/api/')) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(
