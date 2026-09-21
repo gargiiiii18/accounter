@@ -1,20 +1,26 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { WifiOff } from 'lucide-react'
 
 export function OfflineBanner() {
   const [isOffline, setIsOffline] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
-    setIsOffline(!navigator.onLine)
-    const handleOnline = () => setIsOffline(false)
-    const handleOffline = () => setIsOffline(true)
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
+    const checkOnline = async () => {
+      try {
+        const res = await fetch('/api/health', { method: 'HEAD', cache: 'no-store' })
+        setIsOffline(!res.ok)
+      } catch {
+        setIsOffline(true)
+      }
+    }
+
+    checkOnline()
+    intervalRef.current = setInterval(checkOnline, 5000)
     return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
+      if (intervalRef.current) clearInterval(intervalRef.current)
     }
   }, [])
 
