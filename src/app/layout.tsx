@@ -7,6 +7,7 @@ import './globals.css'
 import { AppProvider } from '@/hooks/useApp'
 import { AuthControls } from '@/components/auth/AuthControls'
 import { ServiceWorkerRegister } from './sw-register'
+import { OfflineBanner } from '@/components/OfflineBanner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -41,6 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased bg-[#d0e2f4] text-zinc-900`}>
         <ServiceWorkerRegister />
+        <OfflineBanner />
         <ClerkProvider>
           <AppProvider>
             <header className="bg-[#3b82f6] sticky top-0 z-40 shadow-md">
