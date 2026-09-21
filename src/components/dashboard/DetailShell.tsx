@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { ArrowLeft, Plus, Receipt, Scale, CheckSquare, History } from 'lucide-react'
+import { ArrowLeft, Plus, UserPlus, Receipt, Scale, CheckSquare, History } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatCurrency } from '@/lib/utils'
 import type { Group } from '@/lib/types'
@@ -27,7 +27,8 @@ interface DetailShellProps {
   expenseCount: number
   activeTab: DetailTab
   onTabChange: (tab: DetailTab) => void
-  onAdd: () => void
+  onAddExpense: () => void
+  onAddMember: () => void
   onOpenSettings: () => void
   headerActions?: ReactNode
   sidebar?: ReactNode
@@ -41,7 +42,7 @@ interface DetailShellProps {
  */
 export function DetailShell(props: DetailShellProps) {
   const { group, totalSpent, youreOwed, youOwe, expenseCount } = props
-  const { activeTab, onTabChange, onAdd, onOpenSettings, headerActions, sidebar, children } = props
+  const { activeTab, onTabChange, onAddExpense, onAddMember, onOpenSettings, headerActions, sidebar, children } = props
   return (
     <div className="min-h-[calc(100vh-4rem)] flex flex-col">
       {/* Sticky header */}
@@ -70,9 +71,9 @@ export function DetailShell(props: DetailShellProps) {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               {headerActions}
-              <Button size="sm" className="rounded-xl h-9 px-4 font-semibold" onClick={onAdd}>
-                <Plus className="h-4 w-4 sm:mr-1.5" />
-                <span className="hidden sm:inline">Add</span>
+              <Button size="sm" className="rounded-xl h-9 px-4 font-semibold" onClick={onAddMember}>
+                <UserPlus className="h-4 w-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">Add Member</span>
               </Button>
             </div>
           </div>
@@ -139,10 +140,10 @@ export function DetailShell(props: DetailShellProps) {
         Group settings
       </button>
 
-      {/* Floating action button for mobile */}
+      {/* Floating action button for mobile - Add Expense */}
       <button
         type="button"
-        onClick={onAdd}
+        onClick={onAddExpense}
         className="lg:hidden fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-[#3b82f6] text-white shadow-lg hover:bg-[#2563eb] transition-colors flex items-center justify-center"
         aria-label="Add expense"
       >

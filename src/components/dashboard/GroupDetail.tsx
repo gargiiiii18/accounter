@@ -183,7 +183,8 @@ export function GroupDetail({ groupId }: { groupId: string }) {
       expenseCount={groupExpenses.length}
       activeTab={activeTab}
       onTabChange={setActiveTab}
-      onAdd={() => setNewExpenseOpen(true)}
+      onAddExpense={() => setNewExpenseOpen(true)}
+      onAddMember={() => setNewMemberOpen(true)}
       onOpenSettings={() => setEditGroupOpen(true)}
       headerActions={
         <div className="hidden sm:flex items-center gap-2">
