@@ -1,4 +1,4 @@
-const CACHE_NAME = 'expense-tracker-v1';
+const CACHE_NAME = 'accounter-v1';
 const STATIC_ASSETS = [
   '/',
   '/icon.svg',

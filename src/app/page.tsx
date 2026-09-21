@@ -7,7 +7,7 @@ export default async function HomePage() {
   if (!userId) {
     return (
       <main className="container mx-auto px-4 sm:px-6 py-20 text-center">
-        <h1 className="text-4xl font-bold tracking-tight mb-4">Expense Tracker</h1>
+        <h1 className="text-4xl font-bold tracking-tight mb-4">Accounter</h1>
         <p className="text-zinc-500 max-w-lg mx-auto mb-10 text-lg">
           Track shared expenses with friends and groups. Sign in to view your groups or create a new account to get started.
         </p>

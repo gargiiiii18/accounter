@@ -1,4 +1,4 @@
-# Expense Tracker
+# Accounter
 
 Track shared expenses with friends and groups. Split costs equally, exactly, or by percentage, record settlements, and see who owes whom — all behind Clerk authentication with data stored per-user in MongoDB Atlas.
 
@@ -46,7 +46,7 @@ Track shared expenses with friends and groups. Split costs equally, exactly, or 
    | Variable | Description |
    | --- | --- |
    | `MONGODB_URI` | MongoDB Atlas connection string (URL-encode the password) |
-   | `MONGODB_DB` | Database name (optional, defaults to `expense-tracker`) |
+   | `MONGODB_DB` | Database name (optional, defaults to `accounter`) |
    | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (`pk_test_...`) |
    | `CLERK_SECRET_KEY` | Clerk secret key (`sk_test_...`) |
    | `CLERK_FAPI_URL` | Clerk Frontend API domain (needed by the proxy) |

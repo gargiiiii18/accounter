@@ -32,7 +32,7 @@ if (!uri) {
 }
 
 const apply = process.argv.includes('--yes')
-const dbName = process.env.MONGODB_DB || 'expense-tracker'
+const dbName = process.env.MONGODB_DB || 'accounter'
 const client = new MongoClient(uri)
 
 async function countOrDelete(collectionName, filter) {

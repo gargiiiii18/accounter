@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'development') {
 
 export async function getDb(): Promise<Db> {
   const mongoClient = await clientPromise
-  return mongoClient.db(process.env.MONGODB_DB || 'expense-tracker')
+  return mongoClient.db(process.env.MONGODB_DB || 'accounter')
 }
 
 export async function getCollections() {

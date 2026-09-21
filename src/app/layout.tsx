@@ -2,7 +2,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next'
 import Link from 'next/link'
 import { Inter } from 'next/font/google'
-import { Wallet } from 'lucide-react'
+import Image from 'next/image'
 import './globals.css'
 import { AppProvider } from '@/hooks/useApp'
 import { AuthControls } from '@/components/auth/AuthControls'
@@ -11,13 +11,16 @@ import { ServiceWorkerRegister } from './sw-register'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Expense Tracker',
+  title: 'Accounter',
   description: 'Track shared expenses with friends and groups',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Expense Tracker',
+    title: 'Accounter',
   },
 }
 
@@ -43,10 +46,10 @@ export default function RootLayout({
             <header className="bg-[#3b82f6] sticky top-0 z-40 shadow-md">
               <div className="container mx-auto px-6 h-16 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3 font-bold tracking-tight text-lg text-white">
-                  <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                    <Wallet className="h-5 w-5 text-white" />
+                  <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
+                    <Image src="/app_icon.png" alt="" width={32} height={32} className="object-cover" />
                   </div>
-                  <span>Expense Tracker</span>
+                  <span>Accounter</span>
                 </Link>
                 <AuthControls />
               </div>

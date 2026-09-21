@@ -33,7 +33,7 @@ if (!uri) {
   process.exit(1)
 }
 
-const dbName = process.env.MONGODB_DB || 'expense-tracker'
+const dbName = process.env.MONGODB_DB || 'accounter'
 const remove = process.argv.includes('--remove')
 const client = new MongoClient(uri)
 

@@ -1,6 +1,6 @@
 {
-  "name": "Expense Tracker",
-  "short_name": "Expense Tracker",
+  "name": "Accounter",
+  "short_name": "Accounter",
   "description": "Track shared expenses with friends and groups",
   "start_url": "/",
   "display": "standalone",
